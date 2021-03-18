@@ -1,3 +1,12 @@
+
+"""
+- File: data_io.py
+- Author: Jason A. F. Mitchell
+- Summary: This module is for imputing and outputing files. This includes 
+           things like importing data and converting it to an array as well 
+           as outputing figures based on data used in the overall program.
+"""
+
 import graph_wrapper as gw
 import numpy as np
 
@@ -31,6 +40,7 @@ def getData(fileName=DATA_FILE):
                 dataArray.append(temp)
     return np.array(dataArray)
 
+
 def getTrainingData():
     """
     This function reads data specifically from the training data file specified
@@ -38,7 +48,7 @@ def getTrainingData():
 
     Returns:
         ndarray: 2d array of the file's contents
-    """    
+    """
     return getData(TRAINING_DATA_FILE)
 
 
@@ -61,10 +71,11 @@ def graphData():
     plot.save("data_set.jpg")
     plot.freeze()
 
+
 def graphTrainingData():
     """
     Uses graph wrapper to graph training data.
-    """    
+    """
     X = 0
     Y = 1
     CATEGORY = 2
