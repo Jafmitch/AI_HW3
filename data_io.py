@@ -10,8 +10,8 @@
 import graph_wrapper as gw
 import numpy as np
 
-DATA_FILE = "datafile.dat"
-TRAINING_DATA_FILE = "testdata.dat"
+DATA_FILE = "testdata.dat"
+TRAINING_DATA_FILE = "datafile.dat"
 
 
 def getData(fileName=DATA_FILE):
