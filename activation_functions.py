@@ -30,5 +30,5 @@ def reluPrime(xArray):
     """
     yArray = []
     for x in xArray:
-        yArray.append(1 if x >= 0 else 0)
+        yArray.append([1] if x >= 0 else [0])
     return np.array(yArray)
