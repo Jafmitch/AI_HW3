@@ -30,6 +30,7 @@ def getData(fileName=DATA_FILE):
     Returns:
         ndarray: 2d array of the file's contents
     """
+    CATEGORY = 2
     dataArray = []
     with open(fileName) as f:
         for line in f.read().split("\n"):
@@ -37,6 +38,10 @@ def getData(fileName=DATA_FILE):
             if line != '':
                 for item in line.split(","):
                     temp.append(float(item.strip()))
+                if temp[CATEGORY] == 1.0:
+                    temp[2:3] = [0, 1]
+                else:
+                    temp[2:3] = [1, 0]
                 dataArray.append(temp)
     return np.array(dataArray)
 
