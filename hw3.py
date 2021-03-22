@@ -22,11 +22,11 @@ def main():
 
     ##Separate the values into inputs(values) and known outcome values
     data_array = io.getTrainingData()
-    len = int(data_array.shape[0])
+    layer = int(data_array.shape[0])
     tmp = []
     values = []
     know = []
-    for i in range(len):
+    for i in range(layer):
         tmp = data_array[i][0:2]
         tmp = tmp.T
         values.append(tmp)
@@ -39,12 +39,12 @@ def main():
     ##Feed in each input value into both forward propagation and back propagation
     loss = 1
     loss_arr = np.array([])
-    for i in range(len):
+    for i in range(layer):
         ann[0].input_value = values[i]
         loss_arr = np.append(loss_arr, fp.forward_network(ann, know[i])) #Collect the square difference of each pair
         test = bp.backprop(ann, know[i])
 
-    loss = loss_arr.sum()/len #Finish calculating mean squared error
+    loss = loss_arr.sum()/layer #Finish calculating mean squared error
     print(loss)
     print(ann[0].dCdw)
     del loss_arr
