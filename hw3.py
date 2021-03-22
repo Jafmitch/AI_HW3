@@ -42,7 +42,7 @@ def main():
     for i in range(len):
         ann[0].input_value = values[i]
         loss_arr = np.append(loss_arr, fp.forward_network(ann, know[i])) #Collect the square difference of each pair
-        test = bp.backprop(ann, know[i], values[i])
+        test = bp.backprop(ann, know[i])
 
     loss = loss_arr.sum()/len #Finish calculating mean squared error
     print(loss)

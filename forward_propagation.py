@@ -21,7 +21,6 @@ def forward_network(neuron_layer_array, know, first=True):
     Returns:
          Returns the square root of prediction minus know value"""
     layer = neuron_layer_array.shape[0]
-    know_t = know.T
     for l in range(0, layer):
         if first is True:
             neuron_layer_array[l].z = np.dot(neuron_layer_array[l].w, neuron_layer_array[l].input_value)
@@ -31,5 +30,5 @@ def forward_network(neuron_layer_array, know, first=True):
             neuron_layer_array[l].input_value = neuron_layer_array[l-1].a
             neuron_layer_array[l].z = np.dot(neuron_layer_array[l].w, neuron_layer_array[l].input_value)
             neuron_layer_array[l].a = a.relu(neuron_layer_array[l].z)
-    return np.square(know_t - neuron_layer_array[layer-1].a)
+    return np.square(know - neuron_layer_array[layer-1].a)
 
