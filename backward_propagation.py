@@ -12,7 +12,7 @@ import numpy as np
 AF_PRIME = af.reluPrime
 
 
-def backprop(nn, y, x):
+def backprop(nn, y):
     """
     Does backward propagation of a neural network. It accomplishes this by
     iterating backward through the neural network and calculates the partial
@@ -21,8 +21,10 @@ def backprop(nn, y, x):
     Args:
         nn (list): A list of NeuronLayer objects that represent layers of the
                    neural network.
-        y (ndarray): Expected output values
-        x (ndarray): Input values
+        y (ndarray): Expected output values. Should be an nx1 matrix like such:
+            [[y0],
+             [y1],
+             [y2]]
 
     Returns:
         ndarray: array containing gradient for each layer
