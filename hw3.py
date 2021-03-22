@@ -28,25 +28,29 @@ def main():
     know = []
     for i in range(len):
         tmp = data_array[i][0:2]
+        tmp = tmp.T
         values.append(tmp)
         tmp = data_array[i][2:4]
+        tmp = tmp.T
         know.append(tmp)
     del tmp
     values = np.array(values)
     know = np.array(know)
-
-
     ##Feed in each input value into both forward propagation and back propagation
     loss = 1
     loss_arr = np.array([])
     for i in range(len):
         ann[0].input_value = values[i]
         loss_arr = np.append(loss_arr, fp.forward_network(ann, know[i])) #Collect the square difference of each pair
-        bp.backprop(ann, know[i], values[i])
+        test = bp.backprop(ann, know[i], values[i])
 
     loss = loss_arr.sum()/len #Finish calculating mean squared error
     print(loss)
+    print(ann[0].dCdw)
     del loss_arr
+
+
+
 
 
 if __name__ == "__main__":
