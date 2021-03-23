@@ -18,4 +18,17 @@ def T1D(array1d):
     Returns:
         np.ndarray: 2d numpy array transposed into a column matrix
     """
-    return array1d[np.newaxis].T
+    return to2D(array1d).T
+
+
+def to2D(array1d):
+    """
+    Turns a 1d numpy array into a 2d numpy array.
+
+    Args:
+        array1d (np.ndarray): 1d numpy array
+
+    Returns:
+        np.ndarray: 2d numpy array transposed into a column matrix
+    """
+    return array1d[np.newaxis]
