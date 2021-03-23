@@ -23,7 +23,8 @@ def T1D(array1d):
 
 def to2D(array1d):
     """
-    Turns a 1d numpy array into a 2d numpy array.
+    Turns a 1d numpy array into a 2d numpy array. Returns the array if already
+    2d.
 
     Args:
         array1d (np.ndarray): 1d numpy array
@@ -31,4 +32,7 @@ def to2D(array1d):
     Returns:
         np.ndarray: 2d numpy array transposed into a column matrix
     """
-    return array1d[np.newaxis]
+    if len(array1d.shape) == 2:
+        return array1d
+    else:
+        return array1d[np.newaxis]
