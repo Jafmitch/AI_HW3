@@ -8,11 +8,34 @@
 """
 
 import graph_wrapper as gw
+import neuron_layer as nl
 import numpy as np
 
 DATA_FILE = "testdata.dat"
 TRAINING_DATA_FILE = "datafile.dat"
+COLORS = ["b", "r", "g", "c", "m", "y", "orange", "purple", "lime", "pink"]
 
+
+def displayANN(ann):
+    print(ann)
+    plot = gw.Plot()
+    #add lines
+    for i in range(len(ann)):
+        for j in range(len(ann[i].w)):
+            for k in range(len(ann[i].w[j])):
+                plot.addLine(i, -j, i+1, -k, COLORS[j])
+                plot.addText(i + 1/4, -(j + (k - j)/(4)), str(ann[i].w[k][j]))
+    #add points
+    for i in range(len(ann[0].input_value)):
+        plot.addText(-0.02, -i + 0.05, str(ann[0].input_value[i]))
+        plot.addPoint(0, -i, ".", COLORS[i])
+    for i in range(len(ann)):
+        for j in range(len(ann[i].a)):
+            plot.addPoint(i + 1, -j, "o", "black")
+            plot.addText(i + 0.98, -j + 0.05, str(ann[i].a[j]))
+            
+    plot.setAxis(False)
+    plot.freeze()
 
 def getData(fileName=DATA_FILE):
     """
@@ -55,7 +78,6 @@ def getTrainingData():
         ndarray: 2d array of the file's contents
     """
     return getData(TRAINING_DATA_FILE)
-
 
 def graphData():
     """
