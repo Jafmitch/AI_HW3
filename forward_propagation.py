@@ -30,5 +30,5 @@ def forward_network(neuron_layer_array, know, first=True):
             neuron_layer_array[l].input_value = neuron_layer_array[l-1].a
             neuron_layer_array[l].z = np.dot(neuron_layer_array[l].w, neuron_layer_array[l].input_value)
             neuron_layer_array[l].a = a.relu(neuron_layer_array[l].z)
-    return np.square(neuron_layer_array[layer-1].a - know)
+    return (np.square(np.subtract(neuron_layer_array[layer - 1].a, know))).sum()
 

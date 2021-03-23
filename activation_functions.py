@@ -16,7 +16,7 @@ def relu(xArray):
     Returns:
         ndarray: Array of y values.
     """
-    return np.maximum(xArray, 0)
+    return np.maximum(0, xArray)
 
 def reluPrime(xArray):
     """
