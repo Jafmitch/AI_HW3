@@ -28,12 +28,11 @@ def backprop(nn, y):
         np.ndarray: 1d array containing the gradient for each layer
     """
     LAST = len(nn) - 1
-    gradients = []
 
     # last layer
     nn[LAST].dCdz = hf.to2D(np.multiply(2.0 * (nn[LAST].a - y), AF_PRIME(nn[LAST].z)))
     nn[LAST].dCdw = np.dot(nn[LAST].dCdz.T, hf.to2D(nn[LAST].input_value))
-    gradients.append(nn[LAST].dCdw)
+    nn[LAST].dCdw_sum = np.add(nn[LAST].dCdw, nn[LAST].dCdw_sum)
 
     # other layers
     for n in range(1, len(nn)):
@@ -43,6 +42,24 @@ def backprop(nn, y):
             np.multiply(hf.to2D(AF_PRIME(nn[LAST - n].z)), dz1dz2.T)
         nn[LAST - n].dCdw = \
             (np.dot(nn[LAST - n].dCdz.T, hf.to2D(nn[LAST - n].input_value)))
-        gradients.append(nn[LAST - n].dCdw)
+        nn[LAST - n].dCdw_sum = np.add(nn[LAST - n].dCdw, nn[LAST - n].dCdw_sum) #sum up Gradient weights as they are calculated
 
-    return np.array(gradients)
+#temp for now
+def backprop2(ann, know):
+    layer = ann.shape[0] - 1
+    ann[layer].gz = 2.0 * (ann[layer].a - know)
+    ann[layer-1].ga = np.dot(ann[layer].w.T, ann[layer].gz)
+    ann[layer - 1].gz = ann[layer-1].ga.copy()
+    ann[layer - 1].gz = af.relu(ann[layer - 1].gz)
+    ann[layer].gw = np.dot(ann[layer].gz, hf.T1D(ann[layer-1].ga))
+
+    ann[layer - 2].ga = np.dot(ann[layer-1].w.T, ann[layer-1].gz)
+
+    ann[layer-1].gw = np.dot(ann[layer - 1].gz, hf.T1D(ann[layer - 2].ga))
+    ann[layer - 2].gz = ann[layer - 2].ga.copy()
+    ann[layer - 2].gz = af.relu(ann[layer - 2].gz)
+    ann[layer - 2].gw = np.dot(ann[layer - 2].gz, hf.T1D(ann[layer - 2].input_value))
+
+    ann[layer - 2].dCdw_sum = np.add(ann[layer - 2].gw, ann[layer - 2].dCdw_sum)
+    ann[layer-1].dCdw_sum = np.add(ann[layer - 1].gw, ann[layer - 1].dCdw_sum)
+    ann[layer].dCdw_sum  = np.add(ann[layer].gw, ann[layer].dCdw_sum)

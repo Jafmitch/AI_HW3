@@ -28,8 +28,18 @@ class NeuronLayer:
 
         """
         self.input_value = np.array([])
-        self.w = np.random.rand(m_dim, n_dim)
+        self.w = np.random.randn(m_dim, n_dim)
         self.z = np.array([])
         self.a = np.array([])
+        self.gw = np.array([]) #tmp
+        self.gz = np.array([]) #tmp
+        self.ga = np.array([]) #tmp
         self.dCdz = np.array([])
         self.dCdw = np.array([])
+        self.dCdw_sum = np.zeros((m_dim, n_dim)) #hold sum of dCdw per batch
+        self.m_dim = m_dim
+        self.n_dim = n_dim
+
+    #use to reset sum of dCdw
+    def zero_out(self):
+        self.dCdw_sum = np.zeros((self.m_dim, self.n_dim))
