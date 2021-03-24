@@ -14,7 +14,8 @@ import helper_functions as hf
 BATCH = 100  # batch size
 N_LAYER = 3  # number of Neuron layers
 LEARNING_RATE = 1e-5
-TRIALS = 1
+MAX_ITERATIONS = 1000
+TRIALS = 100
 
 
 def main():
@@ -30,6 +31,7 @@ def main():
         temp = testANN(ann)
         percCorrectAnswers.append(temp)
     io.graphCorrectAnswers(percCorrectAnswers)
+
 
 def buildPerceptron(layers, n, m):
     """
@@ -49,6 +51,7 @@ def buildPerceptron(layers, n, m):
         tmp = nl.NeuronLayer(n, m)
         perceptron = np.append(perceptron, tmp)
     return perceptron
+
 
 def getData(train=True):
     """
@@ -100,18 +103,15 @@ def testANN(ann):
     for j in range(layer):
         ann[0].input_value = values[j]
         fp.forward_network(ann, know[j])
-        # test = np.around(know[j])
-        # guess = np.around(ann[N_LAYER - 1].a)
-        # comp = guess == test
-        # if comp.all():
-        #     check += 1
-        if (ann[N_LAYER - 1].a[0] > ann[N_LAYER - 1].a[1]) == (know[j][0] < know[j][1]):
+        if np.argmax([ann[N_LAYER - 1].a[0], ann[N_LAYER - 1].a[1]]) == \
+           np.argmax([know[j][0], know[j][1]]):
             check += 1
     # print("Number right", check)
     # print("Total data points", layer)
     # print("testpercentage ", check / layer)
     return check / layer
-    
+
+
 def trainANN(ann):
     """
     This function trains the neural network by feeding it training data and
@@ -125,8 +125,9 @@ def trainANN(ann):
     p_loss = 2
     loss = 1
     k = 0
+    iterations = 0
     values, know = getData()
-    while p_loss > loss:
+    while p_loss > loss and iterations < MAX_ITERATIONS:
         p_loss = loss
         grand_arr = []
         loss_arr = np.array([])
@@ -152,6 +153,8 @@ def trainANN(ann):
         k += 1
         del loss_arr
         del grand_arr
+
+        iterations += 1
 
 
 if __name__ == "__main__":
