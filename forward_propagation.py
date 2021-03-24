@@ -19,7 +19,7 @@ def forward_network(neuron_layer_array, know, first=True):
         know(numpy array): that has the know outcome
 
     Returns:
-         Returns the square root of prediction minus know value"""
+         Returns the square of prediction minus know value"""
     layer = neuron_layer_array.shape[0]
     for l in range(0, layer):
         if first is True:

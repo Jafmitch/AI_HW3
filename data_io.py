@@ -79,7 +79,7 @@ def getTrainingData():
     """
     return getData(TRAINING_DATA_FILE)
 
-def graphData():
+def graphTestingData():
     """
     Uses graph wrapper to graph datafile data.
     """
