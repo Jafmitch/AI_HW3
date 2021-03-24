@@ -14,7 +14,7 @@ import helper_functions as hf
 BATCH = 100  # batch size
 N_LAYER = 3  # number of Neuron layers
 LEARNING_RATE = 1e-5
-TRIALS = 100
+TRIALS = 20
 
 
 def main():
@@ -22,9 +22,14 @@ def main():
     The main function of this module.
     """
     # io.graphTrainingData()
-    ann = buildPerceptron(N_LAYER, 2, 2)
-    trainANN(ann)
-    testANN(ann)
+    percCorrectAnswers = []
+    for trial in range(TRIALS):
+        print(trial)
+        ann = buildPerceptron(N_LAYER, 2, 2)
+        trainANN(ann)
+        temp = testANN(ann)
+        percCorrectAnswers.append(temp)
+    io.graphCorrectAnswers(percCorrectAnswers)
 
 def buildPerceptron(layers, n, m):
     """
@@ -86,6 +91,8 @@ def testANN(ann):
 
         Args:
             ann(array of Neuron layer class):
+        Returns:
+            float: number of correct values calculated by the ANN
     """
     values, know = getData(False)
     layer = values.shape[0]
@@ -100,9 +107,10 @@ def testANN(ann):
         #     check += 1
         if (ann[N_LAYER - 1].a[0] > ann[N_LAYER - 1].a[1]) == (know[j][0] < know[j][1]):
             check += 1
-    print("Number right", check)
-    print("Total data points", layer)
-    print("testpercentage ", check / layer)
+    # print("Number right", check)
+    # print("Total data points", layer)
+    # print("testpercentage ", check / layer)
+    return check / layer
     
 def trainANN(ann):
     """
@@ -139,8 +147,8 @@ def trainANN(ann):
             ann[i].zero_out()
 
         loss = loss_arr.sum()/BATCH  # Finish calculating mean squared error
-        if k % 1000 == 0:
-            print(k, loss)
+        # if k % 1000 == 0:
+        #     print(k, loss)
         k += 1
         del loss_arr
         del grand_arr

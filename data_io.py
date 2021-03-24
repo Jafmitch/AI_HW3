@@ -79,6 +79,17 @@ def getTrainingData():
     """
     return getData(TRAINING_DATA_FILE)
 
+
+def graphCorrectAnswers(percentCorrectAnswers):
+    plot = gw.Plot()
+    for i in range(len(percentCorrectAnswers)):
+        plot.addPoint(i, percentCorrectAnswers[i], "o", "purple")
+
+    plot.label("Percent Answers Correct per Trial",
+               "Trial", "Percent of Answers Correct ")
+    plot.save("correct_answers.jpg")
+    plot.freeze()
+
 def graphTestingData():
     """
     Uses graph wrapper to graph datafile data.
