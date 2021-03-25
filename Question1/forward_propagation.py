@@ -24,11 +24,15 @@ def forward_network(neuron_layer_array, know, first=True):
     for l in range(0, layer):
         if first is True:
             neuron_layer_array[l].z = np.dot(neuron_layer_array[l].w, neuron_layer_array[l].input_value)
-            neuron_layer_array[l].a = a.relu(neuron_layer_array[l].z)
+            neuron_layer_array[l].a = a.activation(neuron_layer_array[l].z)
             first = False
+        elif l == (layer-1):
+            neuron_layer_array[l].input_value = neuron_layer_array[l - 1].a
+            neuron_layer_array[l].z = np.dot(neuron_layer_array[l].w, neuron_layer_array[l].input_value)
+            neuron_layer_array[l].a = neuron_layer_array[l].z
         else:
             neuron_layer_array[l].input_value = neuron_layer_array[l-1].a
             neuron_layer_array[l].z = np.dot(neuron_layer_array[l].w, neuron_layer_array[l].input_value)
-            neuron_layer_array[l].a = a.relu(neuron_layer_array[l].z)
+            neuron_layer_array[l].a = a.activation(neuron_layer_array[l].z)
     return (np.square(np.subtract(neuron_layer_array[layer - 1].a, know))).sum()
 

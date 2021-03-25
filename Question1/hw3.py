@@ -11,11 +11,11 @@ import forward_propagation as fp
 import backward_propagation as bp
 import helper_functions as hf
 
-BATCH = 100  # batch size
+BATCH = 240  # batch size
 N_LAYER = 3  # number of Neuron layers
 LEARNING_RATE = 1e-5
-MAX_ITERATIONS = 1000
-TRIALS = 100
+I_MAX = 100000
+TRIALS = 1
 
 
 def main():
@@ -26,14 +26,14 @@ def main():
     percCorrectAnswers = []
     for trial in range(TRIALS):
         print(trial)
-        ann = buildPerceptron(N_LAYER, 2, 2)
+        ann = buildPerceptron(N_LAYER, 2, 25, 2)
         trainANN(ann)
         temp = testANN(ann)
         percCorrectAnswers.append(temp)
     io.graphCorrectAnswers(percCorrectAnswers)
 
 
-def buildPerceptron(layers, n, m):
+def buildPerceptron(layers, i,h, o):
     """
     This function creates an artificial neural network multi-layer perceptron
     using the NeuronLayer object.
@@ -48,7 +48,12 @@ def buildPerceptron(layers, n, m):
     """
     perceptron = np.array([])
     for l in range(layers):
-        tmp = nl.NeuronLayer(n, m)
+        if l == 0:
+            tmp = nl.NeuronLayer(h, i)
+        elif l == (layers -1):
+            tmp = nl.NeuronLayer(o, h)
+        else:
+            tmp = nl.NeuronLayer(h, h)
         perceptron = np.append(perceptron, tmp)
     return perceptron
 
@@ -106,7 +111,7 @@ def testANN(ann):
         if np.argmax([ann[N_LAYER - 1].a[0], ann[N_LAYER - 1].a[1]]) == \
            np.argmax([know[j][0], know[j][1]]):
             check += 1
-    # print("Number right", check)
+    print("Number right", check)
     # print("Total data points", layer)
     # print("testpercentage ", check / layer)
     return check / layer
@@ -122,39 +127,27 @@ def trainANN(ann):
                           or NeuronLayer objects
     """
     # Feed in each input value into both forward propagation and back propagation
-    p_loss = 2
+    values, know = getData()
     loss = 1
     k = 0
-    iterations = 0
-    values, know = getData()
-    while p_loss > loss and iterations < MAX_ITERATIONS:
-        p_loss = loss
-        grand_arr = []
+    while loss > 0.3 and k < I_MAX:
         loss_arr = np.array([])
         for i in range(BATCH):
             ann[0].input_value = values[i]
-            # Collect the square difference of each pair
-            squareDifference = fp.forward_network(ann, know[i])
-            loss_arr = np.append(loss_arr, squareDifference)
+        # Collect the square difference of each pair
+            sqdiff = fp.forward_network(ann, know[i])
+            loss_arr = np.append(loss_arr, sqdiff)
             bp.backprop(ann, know[i])
-            # print("-------")
-            # print(ann[len(ann) - 1].a[0], " | ", know[i][0])
-            # print(ann[len(ann) - 1].a[1], " | ", know[i][1])
-            # print("-------")
-
-        # Finish Average and the sum gradients and edit Weights
+    #Finish Average and the sum gradients and edit Weights
         for i in range(N_LAYER):
-            ann[i].w -= (ann[i].dCdw_sum * 1/BATCH) * LEARNING_RATE
+            ann[i].w -= ann[i].dCdw_sum/BATCH * LEARNING_RATE
             ann[i].zero_out()
-
-        loss = loss_arr.sum()/BATCH  # Finish calculating mean squared error
-        # if k % 1000 == 0:
-        #     print(k, loss)
+        loss = loss_arr.sum()/BATCH
+        if k % 1000 == 0:
+            print(k, loss)
         k += 1
         del loss_arr
-        del grand_arr
 
-        iterations += 1
 
 
 if __name__ == "__main__":

@@ -9,8 +9,8 @@ import neuron_layer as nl
 import numpy as np
 
 # derivative of the activation function used in the neural network
-AF_PRIME = af.reluPrime
-
+AF_PRIME = af.activationPrime
+LEARNING_RATE = 5e-5
 
 def backprop(nn, y):
     """
@@ -30,6 +30,7 @@ def backprop(nn, y):
     # last layer
     nn[LAST].dCdz = np.multiply(2.0 * (nn[LAST].a - y), AF_PRIME(nn[LAST].z))
     nn[LAST].dCdw = (np.dot(nn[LAST].dCdz, nn[LAST].input_value.T))
+    nn[LAST].w -= nn[LAST].dCdw * LEARNING_RATE
     gradients.append(nn[LAST].dCdw)
 
     # other layers
@@ -40,6 +41,7 @@ def backprop(nn, y):
             np.multiply(AF_PRIME(nn[LAST - n].z), dz1dz2)
         nn[LAST - n].dCdw = \
             (np.dot(nn[LAST - n].dCdz, nn[LAST - n].input_value.T))
+        #nn[LAST - n].w -= nn[LAST - n].dCdw * LEARNING_RATE
         gradients.append(nn[LAST - n].dCdw)
         nn[LAST - n].dCdw_sum = \
             np.add(nn[LAST - n].dCdw, nn[LAST - n].dCdw_sum)

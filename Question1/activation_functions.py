@@ -6,9 +6,9 @@
 
 import numpy as np
 
-def relu(xArray):
+def activation(xArray):
     """
-    Calculates y = relu(x)
+    Calculates y = sigmoid(x)
 
     Args:
         xArray (ndarray): Array of x values.
@@ -16,9 +16,13 @@ def relu(xArray):
     Returns:
         ndarray: Array of y values.
     """
-    return np.maximum(0, xArray)
+    s = xArray.shape
+    one_matrix = np.ones(s)
+    e = np.exp(-xArray)
+    don = np.add(one_matrix, e)
+    return 1 / don
 
-def reluPrime(xArray):
+def activationPrime(xArray):
     """
     Calculates y = relu'(x) or y = Heaviside(x)
 
@@ -28,7 +32,8 @@ def reluPrime(xArray):
     Returns:
         np.ndarray: Array of y values in nx1 form.
     """
-    yArray = []
-    for x in xArray:
-        yArray.append([1] if x >= 0 else [0])
-    return np.array(yArray)
+    f = activation(xArray=xArray)
+    s = xArray.shape
+    one_matrix = np.ones(s)
+    f2 = np.subtract(one_matrix, f)
+    return np.multiply(f, f2)

@@ -28,12 +28,10 @@ class NeuronLayer:
 
         """
         self.input_value = np.array([])
-        self.w = np.random.randn(m_dim, n_dim)
+        self.w = np.random.uniform(0,1, (m_dim, n_dim))
+        self.b = np.random.uniform(0,5, (m_dim, 1))
         self.z = np.array([])
         self.a = np.array([])
-        self.gw = np.array([]) #tmp
-        self.gz = np.array([]) #tmp
-        self.ga = np.array([]) #tmp
         self.dCdz = np.array([])
         self.dCdw = np.array([])
         self.dCdw_sum = np.zeros((m_dim, n_dim)) #hold sum of dCdw per batch
