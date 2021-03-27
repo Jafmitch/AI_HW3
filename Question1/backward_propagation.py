@@ -22,7 +22,7 @@ def backprop(nn, y):
                    neural network.
         y (np.ndarray): Expected output values organized in a nx1 matrix.
     Returns:
-        np.ndarray: array containing gradient for each layer
+        list: list containing gradient for each layer
     """
     LAST = len(nn) - 1
     gradients = []
@@ -41,9 +41,8 @@ def backprop(nn, y):
             np.multiply(AF_PRIME(nn[LAST - n].z), dz1dz2)
         nn[LAST - n].dCdw = \
             (np.dot(nn[LAST - n].dCdz, nn[LAST - n].input_value.T))
-        #nn[LAST - n].w -= nn[LAST - n].dCdw * LEARNING_RATE
         gradients.append(nn[LAST - n].dCdw)
         nn[LAST - n].dCdw_sum = \
             np.add(nn[LAST - n].dCdw, nn[LAST - n].dCdw_sum)
 
-    return np.array(gradients)
+    return gradients

@@ -15,7 +15,7 @@ BATCH = 240  # batch size
 N_LAYER = 3  # number of Neuron layers
 LEARNING_RATE = 1e-5
 I_MAX = 100000
-TRIALS = 1
+TRIALS = 10
 
 
 def main():
@@ -23,17 +23,18 @@ def main():
     The main function of this module.
     """
     # io.graphTrainingData()
-    percCorrectAnswers = []
+    percentCorrectAnswers = []
     for trial in range(TRIALS):
         print(trial)
         ann = buildPerceptron(N_LAYER, 2, 25, 2)
-        trainANN(ann)
+        costs = trainANN(ann)
         temp = testANN(ann)
-        percCorrectAnswers.append(temp)
-    io.graphCorrectAnswers(percCorrectAnswers)
+        percentCorrectAnswers.append(temp)
+        io.graphCosts(costs, trial)
+    io.graphCorrectAnswers(percentCorrectAnswers)
 
 
-def buildPerceptron(layers, i,h, o):
+def buildPerceptron(layers, i, h, o):
     """
     This function creates an artificial neural network multi-layer perceptron
     using the NeuronLayer object.
@@ -50,7 +51,7 @@ def buildPerceptron(layers, i,h, o):
     for l in range(layers):
         if l == 0:
             tmp = nl.NeuronLayer(h, i)
-        elif l == (layers -1):
+        elif l == (layers - 1):
             tmp = nl.NeuronLayer(o, h)
         else:
             tmp = nl.NeuronLayer(h, h)
@@ -125,7 +126,11 @@ def trainANN(ann):
     Args:
         ann (np.ndarray): An artificial neural network represented by an array
                           or NeuronLayer objects
+    Returns:
+        list: list of the cost of each iteration
     """
+    costs = []
+
     # Feed in each input value into both forward propagation and back propagation
     values, know = getData()
     loss = 1
@@ -138,16 +143,17 @@ def trainANN(ann):
             sqdiff = fp.forward_network(ann, know[i])
             loss_arr = np.append(loss_arr, sqdiff)
             bp.backprop(ann, know[i])
-    #Finish Average and the sum gradients and edit Weights
+        # Finish Average and the sum gradients and edit Weights
         for i in range(N_LAYER):
             ann[i].w -= ann[i].dCdw_sum/BATCH * LEARNING_RATE
             ann[i].zero_out()
-        loss = loss_arr.sum()/BATCH
+        loss = loss_arr.sum() / BATCH
+        costs.append(loss)
         if k % 1000 == 0:
             print(k, loss)
         k += 1
         del loss_arr
-
+    return costs
 
 
 if __name__ == "__main__":

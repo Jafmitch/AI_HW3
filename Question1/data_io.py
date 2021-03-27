@@ -16,27 +16,6 @@ TRAINING_DATA_FILE = "datafiles/datafile.dat"
 COLORS = ["b", "r", "g", "c", "m", "y", "orange", "purple", "lime", "pink"]
 
 
-def displayANN(ann):
-    print(ann)
-    plot = gw.Plot()
-    #add lines
-    for i in range(len(ann)):
-        for j in range(len(ann[i].w)):
-            for k in range(len(ann[i].w[j])):
-                plot.addLine(i, -j, i+1, -k, COLORS[j])
-                plot.addText(i + 1/4, -(j + (k - j)/(4)), str(ann[i].w[k][j]))
-    #add points
-    for i in range(len(ann[0].input_value)):
-        plot.addText(-0.02, -i + 0.05, str(ann[0].input_value[i]))
-        plot.addPoint(0, -i, ".", COLORS[i])
-    for i in range(len(ann)):
-        for j in range(len(ann[i].a)):
-            plot.addPoint(i + 1, -j, "o", "black")
-            plot.addText(i + 0.98, -j + 0.05, str(ann[i].a[j]))
-            
-    plot.setAxis(False)
-    plot.freeze()
-
 def getData(fileName=DATA_FILE):
     """
     This function reads data from a file and converts it to a 2d array of 
@@ -81,6 +60,12 @@ def getTrainingData():
 
 
 def graphCorrectAnswers(percentCorrectAnswers):
+    """
+    Creates a graph of the percent correct answers per trial.
+
+    Args:
+        percentCorrectAnswers (list): list of percentCorrectAnswers per trial.
+    """
     plot = gw.Plot()
     for i in range(len(percentCorrectAnswers)):
         plot.addPoint(i, percentCorrectAnswers[i], "o", "purple")
@@ -89,6 +74,25 @@ def graphCorrectAnswers(percentCorrectAnswers):
                "Trial", "Percent of Answers Correct ")
     plot.save("correct_answers.jpg")
     plot.freeze()
+
+
+def graphCosts(costs, number=0):
+    """
+    Creates a graph of the cost function results per iteration.
+
+    Args:
+        costs (list): List of cost function results per iteration.
+        number (int): Number assigned to graph when doing multiple
+                      trials. Default is 0.
+    """
+    plot = gw.Plot()
+    plot.pointplot(range(len(costs)), costs, "blue")
+
+    plot.label("Cost per Iteration",
+               "Iteration Number", "Cost")
+    plot.save("cost_per_iteration_trial" + str(number) +".jpg")
+    plot.freeze()
+
 
 def graphTestingData():
     """
