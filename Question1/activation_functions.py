@@ -24,7 +24,7 @@ def activation(xArray):
 
 def activationPrime(xArray):
     """
-    Calculates y = relu'(x) or y = Heaviside(x)
+    Calculates y = sigmoid'(x)
 
     Args:
         xArray (np.ndarray): Array of x values.

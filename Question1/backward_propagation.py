@@ -25,15 +25,15 @@ def backprop(nn, y):
         list: list containing gradient for each layer
     """
     LAST = len(nn) - 1
-    gradients = []
 
     # last layer
     nn[LAST].dCdz = np.multiply(2.0 * (nn[LAST].a - y), AF_PRIME(nn[LAST].z))
     nn[LAST].dCdw = (np.dot(nn[LAST].dCdz, nn[LAST].input_value.T))
+    nn[LAST].dCdw_sum = \
+        np.add(nn[LAST].dCdw, nn[LAST].dCdw_sum)
     nn[LAST].w -= nn[LAST].dCdw * LEARNING_RATE
-    gradients.append(nn[LAST].dCdw)
 
-    # other layers
+    # other layer
     for n in range(1, len(nn)):
         dz1dz2 = \
             np.dot(nn[LAST - n + 1].w.T, nn[LAST - n + 1].dCdz)
@@ -41,8 +41,7 @@ def backprop(nn, y):
             np.multiply(AF_PRIME(nn[LAST - n].z), dz1dz2)
         nn[LAST - n].dCdw = \
             (np.dot(nn[LAST - n].dCdz, nn[LAST - n].input_value.T))
-        gradients.append(nn[LAST - n].dCdw)
         nn[LAST - n].dCdw_sum = \
             np.add(nn[LAST - n].dCdw, nn[LAST - n].dCdw_sum)
+        nn[LAST - n].w -= nn[LAST - n].dCdw * LEARNING_RATE
 
-    return gradients

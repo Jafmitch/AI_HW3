@@ -13,7 +13,7 @@ import helper_functions as hf
 
 BATCH = 240  # batch size
 N_LAYER = 3  # number of Neuron layers
-LEARNING_RATE = 1e-5
+LEARNING_RATE = 5e-5
 I_MAX = 100000
 TRIALS = 10
 

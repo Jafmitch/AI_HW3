@@ -29,7 +29,6 @@ class NeuronLayer:
         """
         self.input_value = np.array([])
         self.w = np.random.uniform(0,1, (m_dim, n_dim))
-        self.b = np.random.uniform(0,5, (m_dim, 1))
         self.z = np.array([])
         self.a = np.array([])
         self.dCdz = np.array([])
