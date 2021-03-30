@@ -56,13 +56,13 @@ def policyIterate(mapArray, start, end):
     route = [start]
     # init policy
     iteration = 0
-    while (not exitCondition([5 + iteration + 1, 25 + (iteration % 2)], end)) and iteration < MAX_ITERATIONS:
+    while (not exitCondition([5 + iteration, 25 + (iteration % 2)], end)) and iteration < MAX_ITERATIONS:
         # copy policy into previous policy
         # compute V
         # choose new policy
 
         iteration += 1
-        route.append([5 + iteration, 25 + (iteration % 2)])  # change later
+        route.append((5 + iteration, 25 + (iteration % 2)))  # change later
     return route
 
 
@@ -82,7 +82,7 @@ def simpleInit():
         mapArray[i][i] = OUT_OF_BOUNDS
         mapArray[i][i + 1] = OUT_OF_BOUNDS
         mapArray[i+1][i] = OUT_OF_BOUNDS
-    return mapArray, [5, 25], [45, 25]
+    return mapArray, (5, 25), (45, 25)
 
 
 if __name__ == "__main__":
