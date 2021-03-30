@@ -23,7 +23,7 @@ def printMap(mapArray, route):
 
     Args:
         mapArray (list): 2d list of integers representing map of problem.
-        route (list, optional): List of coordinate lists representing the route
+        route (list, optional): List of coordinates representing the route
                                 taken. Defaults to None.
     """
     xLen = len(mapArray)
