@@ -1,3 +1,8 @@
+"""
+- File: policy.py
+- Author: Eric Tulowetzke
+- Summary: 
+"""
 
 import random as ran
 OUT_OF_BOUNDS = -1

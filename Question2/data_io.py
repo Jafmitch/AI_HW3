@@ -13,8 +13,8 @@ import graph_wrapper as gw
 OUT_OF_BOUNDS = -1
 EMPTY = 0
 START = 1
-END = 2
-
+CURRENT = 2
+END = 3
 
 def printMap(mapArray, route):
     """
@@ -45,6 +45,8 @@ def printMap(mapArray, route):
                 plot.addPoint(x, y, style="o", color="red")
             elif mapArray[x][y] == END:
                 plot.addPoint(x, y, style="o", color="green")
+            elif mapArray[x][y] == CURRENT:
+                plot.addPoint(x, y, style="o", color="purple")
 
     # draw route
     X = 0
@@ -54,6 +56,7 @@ def printMap(mapArray, route):
                      route[i + 1][X], route[i + 1][Y], "blue")
 
     plot.setAxis(False)
-    plot.label("Route Taken")
-    plot.save("route.jpg")
-    plot.freeze()
+    # plot.label("Route Taken")
+    # plot.save("route.jpg")
+    # plot.freeze()
+    plot.display()

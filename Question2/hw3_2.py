@@ -3,18 +3,18 @@
 - Author: Jason A. F. Mitchell and Eric Tulowetzke
 - Summary: This is the main module for homework 3 problem 2.
 """
-import numpy as np
 import data_io as io
 import graph_wrapper as gw
-import policy as pie
 import math
+import numpy as np
+import policy as pie
 import random as ran
 
+COOLING_FACTOR = 0.1
+INITIAL_TEMPERATURE = 3000
 MAP_X = 50
 MAP_Y = 50
 MAX_ITERATIONS = 10000
-TEMP = 3000
-COOLING = 0.999
 
 # Macros for map array
 OUT_OF_BOUNDS = -1
@@ -23,14 +23,18 @@ START = 1
 CURRENT = 2
 END = 3
 
+# Macros for coordinates
+X = 0
+Y = 1
+
 
 def main():
     """
     The main function of this module.
     """
     mapArray, start, end = simpleInit()
-    route = policyIterate(mapArray, start, end)
-    io.printMap(mapArray, route)
+    valueMap = policyIterate(np.array(mapArray), start, end)
+    # io.printMap(mapArray, route)
 
 
 def accept_solution(energy1, energy2, temperature, oi, oj, ni, nj):
@@ -56,7 +60,7 @@ def accept_solution(energy1, energy2, temperature, oi, oj, ni, nj):
             return False, oi, oj
 
 
-def dist(current_i, current_j, end_i, end_j):
+def distance(current_i, current_j, end_i, end_j):
     """
     Calculates distance of IJ values entered i from the endpoint
     :param current_i: X-coordinate
@@ -68,13 +72,6 @@ def dist(current_i, current_j, end_i, end_j):
     i = math.pow((end_i - current_i), 2)
     j = math.pow((end_j - current_j), 2)
     return math.sqrt((i + j))
-
-
-def exitCondition(start, end):
-    X = 0
-    Y = 1
-    # replace later
-    return start[X] == end[X]
 
 
 def initMapArray():
@@ -92,27 +89,39 @@ def initMapArray():
         mapArray.append(rowArray)
     return mapArray
 
+def initValueMap():
+    valueMap = []
+    for i in range(MAP_X):
+        temp = []
+        for j in range(MAP_Y):
+            temp.append(0)
+        valueMap.append(0)
+    return valueMap
+
 
 def policyIterate(mapArray, start, end):
-    # NOTE: this is just a temporary filler until policy class gets written
+    valueMap = np.array(initValueMap())
+    policy = pie.Policy()
 
-    route = [start]
-    p = pie.Policy()
-    map_array = np.array(mapArray)
-    # Initialize beginning x and Y coordinates
-    i, j, k = 5, 25, 0
-    t = TEMP
-    while i != 45 or j != 25:
-        new_i, new_j, map_array = p.new_policy(i=i, j=j, map_array=map_array)
-        old_dist = dist(current_i=i, current_j=j, end_i=45, end_j=25)
-        new_dist = dist(current_i=new_i, current_j=new_j, end_i=45, end_j=25)
+    i, j, iteration = start[X], start[Y], 0
+    temperature = INITIAL_TEMPERATURE
+    while (i != end[X] or j != end[Y]) and iteration < MAX_ITERATIONS:
+        new_i, new_j, mapArray = policy.new_policy(i, j, mapArray)
         outcome, i, j = accept_solution(
-            old_dist, new_dist, t, i, j, new_i, new_j)
-        t *= COOLING
-        p.update_policy(outcome=outcome)
-        k += 1
-    print(k)
-    return route
+            distance(i, j, end[X], end[Y]),
+            distance(new_i, new_j, end[X], end[Y]),
+            temperature,
+            i,
+            j,
+            new_i,
+            new_j
+        )
+        temperature *= COOLING_FACTOR
+        policy.update_policy(outcome)
+        iteration += 1
+        print(iteration)
+        io.printMap(mapArray, [])
+    return valueMap
 
 
 def simpleInit():
