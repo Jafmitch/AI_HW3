@@ -24,6 +24,14 @@ Y = 1
 
 
 def displayMap(mapArray, currentLocation):
+    """
+    Displays visual of map array using graph wrapper. Will also display a point
+    at the current location of the "robot".
+
+    Args:
+        mapArray (list): 2d list representing the map of the problem
+        currentLocation (tuple): Current location represented as x and y coordinates
+    """
     xLen = len(mapArray)
     yLen = len(mapArray[0])
     plot = gw.Plot()
@@ -94,6 +102,12 @@ def printMap(mapArray, route):
 
 
 def printPolicyMap(policyMap):
+    """
+    Create a visual of the policy map using different colored lines.
+
+    Args:
+        policyMap (list): 3d list representing the policy map
+    """
     plot = gw.Plot()
 
     for x in range(len(policyMap)):

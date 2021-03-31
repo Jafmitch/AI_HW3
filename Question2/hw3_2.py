@@ -80,17 +80,20 @@ def acceptSolution(energy1, energy2, temperature):
 
 def adjustWeights(policyMap, x, y, action, accept):
     """
-    
+    Adjusts weights by a reward or punishment value based on whether or not the
+    value was accepted as an improvement. 
 
     Args:
-        policyMap (list): [description]
-        x (int): [description]
-        y (int): [description]
-        action (int): [description]
-        accept (bool): [description]
+        policyMap (list): 3d list of policy weights for different actions
+        x (int): X coordinate of policy map needing adjustment
+        y (int): Y coordinate of policy map needing adjustment
+        action (int): Number corresponding to the proposed action the algorithm
+                      is taking
+        accept (bool): Whether or not the value was accepted by the fitness
+                       algorithm.
 
     Returns:
-        [type]: [description]
+        list: Updated policy map
     """
     for i in range(NUMBER_OF_ACTIONS):
         if i == action:

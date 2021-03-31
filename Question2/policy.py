@@ -1,6 +1,6 @@
 """
 - File: policy.py
-- Author: Eric Tulowetzke
+- Author: Jason Mitchell and Eric Tulowetzke
 - Summary: 
 """
 import numpy as np
