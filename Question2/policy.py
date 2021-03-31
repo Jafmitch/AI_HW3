@@ -36,8 +36,8 @@ def valid(i, j, map_array):
     Return:
         True if valid position to move to
     """
-    rows = map_array.shape[0]
-    cols = map_array.shape[1]
+    rows = len(map_array)
+    cols = len(map_array[0])
     if i < 0 or i >= rows:
         return False
     if j < 0 or j >= cols:
@@ -61,7 +61,6 @@ class Policy:
     def chooseNextState(self, x, y, policyMap, mapArray):
         new_x, new_y, action = self.__getNewState(x, y)
         while not valid(new_x, new_y, mapArray):
-            self.weights = self.weights + 1
             self.weights[action] = 0
             new_x, new_y, action = self.__getNewState(x, y)
         return new_x, new_y, action
@@ -72,23 +71,34 @@ class Policy:
             self.weights = self.weights + 1
             sumOfAll = NUMBER_OF_ACTIONS
         randomNumber = rand.randrange(sumOfAll)
+        # print(self.weights)
+        # print(self.__sumTotal(NUMBER_OF_ACTIONS), ", ", randomNumber)
         if randomNumber < self.__sumTotal(1):
+            # print("LEFT")
             return x - 1, y, LEFT
         elif randomNumber < self.__sumTotal(2):
+            # print("RIGHT")
             return x + 1, y, RIGHT
         elif randomNumber < self.__sumTotal(3):
+            # print("UP")
             return x, y + 1, UP
         elif randomNumber < self.__sumTotal(4):
+            # print("DOWN")
             return x, y - 1, DOWN
         elif randomNumber < self.__sumTotal(5):
+            # print("DOWN_LEFT")
             return x - 1, y - 1, DOWN_LEFT
         elif randomNumber < self.__sumTotal(6):
+            # print("UP_LEFT")
             return x - 1, y + 1, UP_LEFT
         elif randomNumber < self.__sumTotal(7):
+            # print("UP_RIGHT")
             return x + 1, y + 1, UP_RIGHT
         elif randomNumber < self.__sumTotal(8):
+            # print("DOWN_RIGHT")
             return x + 1, y - 1, DOWN_RIGHT
         else:
+            # print("ERROR")
             return x, y, -1
 
     def __sumTotal(self, numberOfElements):

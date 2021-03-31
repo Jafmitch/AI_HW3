@@ -10,15 +10,17 @@ import numpy as np
 import policy as pie
 import random as rand
 
-COOLING_FACTOR = 0.9
+COOLING_FACTOR = 0.1
 INITIAL_TEMPERATURE = 3000
 MAP_X = 50
 MAP_Y = 50
-MAX_ITERATIONS = 2000
+MAX_ITERATIONS = 1000
 NUMBER_OF_ACTIONS = 8
-NUMBER_OF_TRIALS = 1000
-PUNISHMENT_VALUE = -10
-REWARD_VALUE = 10
+NUMBER_OF_TRIALS = 5000
+PUNISHMENT_VALUE = -1
+REWARD_VALUE = 1
+X_ACTIONS = [-1, 1, 0, 0, -1, -1, 1, 1]
+Y_ACTIONS = [0, 0, 1, -1, -1, 1, 1, -1]
 
 # Macros for map array
 OUT_OF_BOUNDS = -1
@@ -37,20 +39,20 @@ def main():
     """
     policyMap = np.array(initPolicyMap())
     mapArray, start, end = hardInit()
-    # io.printMap(mapArray, [])
     for trial in range(NUMBER_OF_TRIALS):
         print(trial)
-        policyMap, route = policyIterate(np.array(mapArray), start, end, policyMap)
+        policyMap, route = policyIterate(
+            np.array(mapArray), start, end, policyMap
+        )
     route = []
     policyMap, route = policyIterate(np.array(mapArray), start, end, policyMap)
-    route.insert(0, start)
     io.printPolicyMap(policyMap)
     io.printMap(mapArray, route)
 
 
-def accept_solution(energy1, energy2, temperature, current, new):
+def acceptSolution(energy1, energy2, temperature):
     """
-    Function checks whether to accept or reject solution using an algorithm 
+    Function checks whether to accept or reject solution using an algorithm
     similar to simulated annealing.
 
     Args:
@@ -58,14 +60,12 @@ def accept_solution(energy1, energy2, temperature, current, new):
         energy2 (float): fitness or energy of new solution
         temperature (float): "temperature" value that determines probability of
                              accepting a better value
-        current ([type]): [description]
-        new ([type]): [description]
 
     Returns:
-        [type]: [description]
+        bool: True if accept, false if not.
     """
     if energy1 > energy2:
-        return True, new[X], new[Y]
+        return True
     else:
         try:
             a = math.exp((energy1 - energy2) / temperature)
@@ -73,9 +73,32 @@ def accept_solution(energy1, energy2, temperature, current, new):
             a = 1
         b = rand.random()
         if a > b:
-            return True, new[X], new[Y]
+            return True
         else:
-            return False, current[X], current[Y]
+            return False
+
+
+def adjustWeights(policyMap, x, y, action, accept):
+    """
+    
+
+    Args:
+        policyMap (list): [description]
+        x (int): [description]
+        y (int): [description]
+        action (int): [description]
+        accept (bool): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    for i in range(NUMBER_OF_ACTIONS):
+        if i == action:
+            policyMap[x][y][i] += (
+                REWARD_VALUE if accept else PUNISHMENT_VALUE)
+        policyMap[x][y][i] = 0 if policyMap[x][y][i] < 0 else policyMap[x][y][i]
+        policyMap[x][y][i] = 1000 if policyMap[x][y][i] > 1000 else policyMap[x][y][i]
+    return policyMap
 
 
 def distance(current_i, current_j, end_i, end_j):
@@ -94,7 +117,7 @@ def distance(current_i, current_j, end_i, end_j):
 
 def hardInit():
     """
-    Initializes map array with a difficult out of bounds area.
+    Initializes map array with a randomly generated out-of-bounds area.
 
     Returns:
         list: initialized 2d map array
@@ -102,14 +125,47 @@ def hardInit():
         list: ending coordinates
     """
     mapArray = initMapArray()
-    start = (rand.randint(0, 10), rand.randint(0, 49))
-    end = (rand.randint(46, 49), rand.randint(0, 49))
+    start = (rand.randint(0, int(MAP_X / 10)), rand.randint(0, MAP_Y - 1))
+    end = (rand.randint(int(MAP_X - MAP_X / 10), MAP_Y - 1),
+           rand.randint(0, MAP_Y - 1))
     mapArray[start[X]][start[Y]] = START
     mapArray[end[X]][end[Y]] = END
-    for i in range(rand.randint(12, 24), rand.randint(25, 44)):
-        for j in range(rand.randint(12, 24), rand.randint(25, 44)):
+
+    upperX = int(MAP_X - MAP_X / 10 - 1)
+    lowerX = int(MAP_X / 10 + 1)
+    middleX = int(MAP_X / 2 - 1)
+    upperY = MAP_Y - 2
+    lowerY = 2
+    middleY = int(MAP_Y / 2 - 1)
+    for i in range(rand.randint(lowerX, middleX), rand.randint(middleX + 2, upperX)):
+        for j in range(rand.randint(lowerY, middleY), rand.randint(middleY + 2, upperY)):
             mapArray[i][j] = OUT_OF_BOUNDS
     return mapArray, start, end
+
+
+def hardishInit():
+    """
+    Creates an X-shape out-of-bounds area on the map.
+
+    Returns:
+        list: initialized 2d map array
+        list: starting coordinates
+        list: ending coordinates
+    """
+    mapArray = initMapArray()
+    start = (int(MAP_X / 10), int(MAP_Y / 2))
+    end = (int(MAP_X - MAP_X / 10), int(MAP_Y / 2))
+    mapArray[start[X]][start[Y]] = START
+    mapArray[end[X]][end[Y]] = END
+    for i in range(int((3 * MAP_X) / 10), int((3 * MAP_X) / 5)):
+        mapArray[int(MAP_X/2)+1][i] = OUT_OF_BOUNDS
+        mapArray[int(MAP_X/2)][i] = OUT_OF_BOUNDS
+        mapArray[MAP_X - i][i] = OUT_OF_BOUNDS
+        mapArray[MAP_X - i][i+1] = OUT_OF_BOUNDS
+        mapArray[i][i] = OUT_OF_BOUNDS
+        mapArray[i][i + 1] = OUT_OF_BOUNDS
+    return mapArray, start, end
+
 
 def initMapArray():
     """
@@ -128,6 +184,12 @@ def initMapArray():
 
 
 def initPolicyMap():
+    """
+    Initializes the policy map by setting all weights to 0 at each square.
+
+    Returns:
+        list: 3d list of policy weights.
+    """
     policyMap = []
     for x in range(MAP_X):
         column = []
@@ -141,22 +203,36 @@ def initPolicyMap():
 
 
 def policyIterate(mapArray, start, end, policyMap):
-    route = []
+    """
+    Iterate weights in the policy to create the best policy map.
+
+    Args:
+        mapArray (list): List structure representing the playing field of the
+                         problem.
+        start (tuple): Starting coordinates.
+        end (tuple): End coordinates.
+        policyMap (list): 3d list record of policy weight values.
+
+    Returns:
+        list: Updated policy map.
+        list: Route taken over the course of the problem.
+    """
+    route = [start]
     i, j, iteration = start[X], start[Y], 0
     temperature = INITIAL_TEMPERATURE
     while (i != end[X] or j != end[Y]) and iteration < MAX_ITERATIONS:
         policy = pie.Policy(policyMap[i][j])
-        new_i, new_j, action = policy.chooseNextState(i, j, policyMap, mapArray)
-        accept, i, j = accept_solution(
+        new_i, new_j, action = policy.chooseNextState(
+            i, j, policyMap, mapArray)
+        accept = acceptSolution(
             distance(i, j, end[X], end[Y]),
             distance(new_i, new_j, end[X], end[Y]),
-            temperature,
-            (i, j),
-            (new_i, new_j)
+            temperature
         )
         temperature *= COOLING_FACTOR
-        policyMap[new_i][new_j][action] = policyMap[new_i][new_j][action] + \
-            (REWARD_VALUE if accept else PUNISHMENT_VALUE)
+        policyMap = adjustWeights(policyMap, i, j, action, accept)
+        i = new_i
+        j = new_j
         iteration += 1
         # io.displayMap(mapArray, (i, j))
         route.append((i, j))
@@ -165,7 +241,7 @@ def policyIterate(mapArray, start, end, policyMap):
 
 def simpleInit():
     """
-    Initializes map array with a simple out of bounds area.
+    Initializes map array with a simple out-of-bounds area.
 
     Returns:
         list: initialized 2d map array
@@ -173,13 +249,15 @@ def simpleInit():
         list: ending coordinates
     """
     mapArray = initMapArray()
-    mapArray[5][25] = START
-    mapArray[45][25] = END
-    for i in range(15, 30):
+    start = (int(MAP_X / 10), int(MAP_Y / 2))
+    end = (int(MAP_X - MAP_X / 10), int(MAP_Y / 2))
+    mapArray[start[X]][start[Y]] = START
+    mapArray[end[X]][end[Y]] = END
+    for i in range(int((3 * MAP_X)/10), int((3 * MAP_X)/5)):
         mapArray[i][i] = OUT_OF_BOUNDS
         mapArray[i][i + 1] = OUT_OF_BOUNDS
         mapArray[i + 1][i] = OUT_OF_BOUNDS
-    return mapArray, [5, 25], [45, 25]
+    return mapArray, start, end
 
 
 if __name__ == "__main__":

@@ -99,7 +99,7 @@ def printPolicyMap(policyMap):
     for x in range(len(policyMap)):
         for y in range(len(policyMap[0])):
             for action in range(len(policyMap[0][0])):
-                colorVal = int(policyMap[x][y][action] / 5)
+                colorVal = int(policyMap[x][y][action] * (255/1000))
                 colorVal = 16 if colorVal < 16 else colorVal
                 colorVal = 255 if colorVal > 255 else colorVal
                 plot.addLine(
@@ -107,7 +107,8 @@ def printPolicyMap(policyMap):
                     y,
                     x + X_ACTIONS[action],
                     y + Y_ACTIONS[action],
-                    color="#" + hex(colorVal).replace("0x", "")[0:2].upper() + "FF00"
+                    color="#" + hex(colorVal)
+                    .replace("0x", "")[0:2].upper() + "00FF"
                 )
 
     plot.setAxis(False)
