@@ -21,8 +21,6 @@ def backprop(nn, y):
         nn (list): A list of NeuronLayer objects that represent layers of the
                    neural network.
         y (np.ndarray): Expected output values organized in a nx1 matrix.
-    Returns:
-        list: list containing gradient for each layer
     """
     LAST = len(nn) - 1
 
