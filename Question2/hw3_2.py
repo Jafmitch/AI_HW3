@@ -16,7 +16,7 @@ MAP_X = 50
 MAP_Y = 50
 MAX_ITERATIONS = 2000
 NUMBER_OF_ACTIONS = 8
-NUMBER_OF_TRIALS = 10000
+NUMBER_OF_TRIALS = 100 # 10000
 PUNISHMENT_VALUE = -10
 REWARD_VALUE = 2
 X_ACTIONS = [-1, 1, 0, 0, -1, -1, 1, 1]
@@ -37,6 +37,7 @@ def main():
     """
     The main function of this module.
     """
+    distancesTraveled = []
     policyMap = np.array(initPolicyMap())
     mapArray, start, end = hardInit()
     for trial in range(NUMBER_OF_TRIALS):
@@ -44,10 +45,13 @@ def main():
         policyMap, route = policyIterate(
             np.array(mapArray), start, end, policyMap
         )
+        distancesTraveled.append(getDistanceTraveled(route))
     route = []
     policyMap, route = policyIterate(np.array(mapArray), start, end, policyMap)
+    distancesTraveled.append(getDistanceTraveled(route))
     io.printPolicyMap(policyMap)
     io.printMap(mapArray, route)
+    io.printDistancesTraveled(distancesTraveled)
 
 
 def acceptSolution(energy1, energy2, temperature):
@@ -116,6 +120,23 @@ def distance(current_i, current_j, end_i, end_j):
     i = math.pow((end_i - current_i), 2)
     j = math.pow((end_j - current_j), 2)
     return math.sqrt((i + j))
+
+
+def getDistanceTraveled(route):
+    """
+    This function calculates the total distance traveled for a given path.
+
+    Args:
+        route (list): List of tuples representing the route taken by the robot.
+
+    Returns:
+        float: Total distance traveled
+    """
+    distanceTraveled = 0
+    for i in range(len(route) - 1):
+        distanceTraveled += \
+            distance(route[i][X], route[i][Y], route[i+1][X], route[i+1][Y])
+    return distanceTraveled
 
 
 def hardInit():

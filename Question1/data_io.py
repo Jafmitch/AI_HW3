@@ -6,7 +6,7 @@
            things like importing data and converting it to an array as well 
            as outputing figures based on data used in the overall program.
 """
-
+import forward_propagation as fp
 import graph_wrapper as gw
 import neuron_layer as nl
 import numpy as np
@@ -57,6 +57,31 @@ def getTrainingData():
         ndarray: 2d array of the file's contents
     """
     return getData(TRAINING_DATA_FILE)
+
+
+def graphActivationRegion(ann, trial):
+    """
+    Graphs the boundaries of where the ANN puts points into either category.
+
+    Args:
+        ann (np.ndarray): An artificial neural network represented by an array
+                          or NeuronLayer objects
+        trial (int): Trial number to display in the legend
+    """
+    NUM_LAYERS = len(ann)
+    plot = gw.Plot()
+    for x in np.linspace(-20, 20, 400):
+        for y in np.linspace(-20, 20, 400):
+            ann[0].input_value = np.array([[x],[y]])
+            fp.forward_network(ann, np.array([[0],[0]]))
+            if ann[NUM_LAYERS - 1].a[0] > ann[NUM_LAYERS - 1].a[1]:
+                plot.addPoint(x, y, "s", "blue")
+            else:
+                plot.addPoint(x, y, "s", "red")
+    
+    plot.label("Activation Region of Trial " + str(trial),  "x", "y")
+    plot.save("activation_region" + str(trial) +".jpg")
+    plot.freeze()
 
 
 def graphCorrectAnswers(percentCorrectAnswers):
