@@ -58,6 +58,23 @@ def displayMap(mapArray, currentLocation):
     plot.display()
 
 
+def printDistancesTraveled(distancesTraveled):
+    """
+    This function prints a graph of the total distances traveled in each iteration
+    of the algorithm.
+
+    Args:
+        distancesTraveled (list): List of floats representing the total distance
+                                  traveled at each iteration.
+    """
+    plot = gw.Plot()
+    plot.pointplot(range(len(distancesTraveled)), distancesTraveled)
+    plot.label("Distance Traveled vs. Iteration",
+               "Iteration", "Distance Traveled")
+    plot.save("route.jpg")
+    plot.freeze()
+
+
 def printMap(mapArray, route):
     """
     Prints visual of map array using graph wrapper. Will also display a route
