@@ -119,8 +119,8 @@ def printPolicyMap(policyMap):
                 plot.addLine(
                     x,
                     y,
-                    x + X_ACTIONS[action],
-                    y + Y_ACTIONS[action],
+                    x + 0.5 * X_ACTIONS[action],
+                    y + 0.5 * Y_ACTIONS[action],
                     color="#" + hex(colorVal)
                     .replace("0x", "")[0:2].upper() + "00FF"
                 )
