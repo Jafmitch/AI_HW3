@@ -13,6 +13,9 @@ import helper_functions as hf
 
 BATCH = 240  # batch size
 N_LAYER = 3  # number of Neuron layers
+INPUT_DIM = 2
+HIDDEM_DIM = 25
+OUTPUT_DIM = 2
 LEARNING_RATE = 5e-5
 I_MAX = 100000
 TRIALS = 10
@@ -26,7 +29,7 @@ def main():
     percentCorrectAnswers = []
     for trial in range(TRIALS):
         print(trial)
-        ann = buildPerceptron(N_LAYER, 2, 25, 2)
+        ann = buildPerceptron(N_LAYER, INPUT_DIM, HIDDEM_DIM, OUTPUT_DIM)
         costs = trainANN(ann)
         temp = testANN(ann)
         percentCorrectAnswers.append(temp)
