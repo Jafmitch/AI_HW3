@@ -71,7 +71,7 @@ def printDistancesTraveled(distancesTraveled):
     plot.pointplot(range(len(distancesTraveled)), distancesTraveled)
     plot.label("Distance Traveled vs. Iteration",
                "Iteration", "Distance Traveled")
-    plot.save("route.jpg")
+    plot.save("distance_traveled.jpg")
     plot.freeze()
 
 
