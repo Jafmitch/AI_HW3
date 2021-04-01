@@ -3,21 +3,21 @@
 - Author: Jason A. F. Mitchell and Eric Tulowetzke
 - Summary: This is the main module for homework 3 problem 1.
 """
-import numpy as np
-import data_io as io
-import graph_wrapper as gw
-import neuron_layer as nl
-import forward_propagation as fp
 import backward_propagation as bp
+import data_io as io
+import forward_propagation as fp
+import graph_wrapper as gw
 import helper_functions as hf
+import neuron_layer as nl
+import numpy as np
 
 BATCH = 240  # batch size
-N_LAYER = 3  # number of Neuron layers
-INPUT_DIM = 2
 HIDDEM_DIM = 25
-OUTPUT_DIM = 2
-LEARNING_RATE = 5e-5
 I_MAX = 100000
+INPUT_DIM = 2
+LEARNING_RATE = 5e-5
+N_LAYER = 3  # number of Neuron layers
+OUTPUT_DIM = 2
 TRIALS = 10
 
 
@@ -25,7 +25,8 @@ def main():
     """
     The main function of this module.
     """
-    # io.graphTrainingData()
+    io.graphTrainingData()
+    io.graphTestingData()
     percentCorrectAnswers = []
     for trial in range(TRIALS):
         print(trial)
@@ -34,6 +35,7 @@ def main():
         temp = testANN(ann)
         percentCorrectAnswers.append(temp)
         io.graphCosts(costs, trial)
+        io.graphActivationRegion(ann, trial)
     io.graphCorrectAnswers(percentCorrectAnswers)
 
 
