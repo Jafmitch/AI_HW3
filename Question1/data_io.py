@@ -60,6 +60,14 @@ def getTrainingData():
 
 
 def graphActivationRegion(ann, trial):
+    """
+    Graphs the boundaries of where the ANN puts points into either category.
+
+    Args:
+        ann (np.ndarray): An artificial neural network represented by an array
+                          or NeuronLayer objects
+        trial (int): Trial number to display in the legend
+    """
     NUM_LAYERS = len(ann)
     plot = gw.Plot()
     for x in np.linspace(-20, 20, 400):

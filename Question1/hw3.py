@@ -20,7 +20,6 @@ N_LAYER = 3  # number of Neuron layers
 OUTPUT_DIM = 2
 TRIALS = 10
 
-
 def main():
     """
     The main function of this module.
